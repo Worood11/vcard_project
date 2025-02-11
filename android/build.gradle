@@ -1,3 +1,5 @@
+ext.kotlin_version = '1.9.24' // Update to the latest stable version
+
 allprojects {
     repositories {
         google()
