@@ -101,3 +101,73 @@ class LineItem extends StatelessWidget {
     );
   }
 }
+
+class DropTargetItem extends StatefulWidget {
+  final String property;
+  final Function(String, String) onDrop;
+  const DropTargetItem({
+    super.key,
+    required this.property,
+    required this.onDrop,
+  });
+
+  @override
+  State<DropTargetItem> createState() => _DropTargetItemState();
+}
+
+class _DropTargetItemState extends State<DropTargetItem> {
+  String dragItem = '';
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 1,
+          child: Text(widget.property),
+        ),
+        Expanded(
+          flex: 2,
+          child: DragTarget<String>(
+              builder: (context, candidateDate, rejectedData) => Container(
+                    padding: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      border: candidateDate.isNotEmpty
+                          ? Border.all(color: Colors.red, width: 2)
+                          : null,
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                              dragItem.isNotEmpty ? 'Drop here' : dragItem),
+                        ),
+                        if (dragItem.isNotEmpty)
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                dragItem = '';
+                              });
+                            },
+                            child: const Icon(
+                              Icons.clear,
+                              size: 15,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+              onAccept: (value) {
+                setState(() {
+                  if (dragItem.isEmpty) {
+                    dragItem = value;
+                  } else {
+                    dragItem += ' $value';
+                  }
+                });
+                widget.onDrop(widget.property, dragItem);
+              }),
+        ),
+      ],
+    );
+  }
+}
