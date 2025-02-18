@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:vcard_project/utils/constants.dart';
 
 class ScanPage extends StatefulWidget {
   static const String routeName = 'scan';
@@ -43,6 +44,42 @@ class _ScanPageState extends State<ScanPage> {
               ),
             ],
           ),
+          if (isScanOver)
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    DragTargetItem(
+                        property: ContactProperties.name,
+                        onDrop: getPropertyValue),
+                    DragTargetItem(
+                        property: ContactProperties.mobile,
+                        onDrop: getPropertyValue),
+                    DragTargetItem(
+                        property: ContactProperties.email,
+                        onDrop: getPropertyValue),
+                    DragTargetItem(
+                        property: ContactProperties.company,
+                        onDrop: getPropertyValue),
+                    DragTargetItem(
+                        property: ContactProperties.designation,
+                        onDrop: getPropertyValue),
+                    DragTargetItem(
+                        property: ContactProperties.address,
+                        onDrop: getPropertyValue),
+                    DragTargetItem(
+                        property: ContactProperties.website,
+                        onDrop: getPropertyValue),
+                  ],
+                ),
+              ),
+            ),
+          if (isScanOver)
+            const Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(hint),
+            ),
           Wrap(
             children: lines.map((line) => LineItem(line: line)).toList(),
           ),
@@ -74,6 +111,8 @@ class _ScanPageState extends State<ScanPage> {
       });
     }
   }
+
+  getPropertyValue(String property, String value) {}
 }
 
 class LineItem extends StatelessWidget {
@@ -102,20 +141,20 @@ class LineItem extends StatelessWidget {
   }
 }
 
-class DropTargetItem extends StatefulWidget {
+class DragTargetItem extends StatefulWidget {
   final String property;
   final Function(String, String) onDrop;
-  const DropTargetItem({
+  const DragTargetItem({
     super.key,
     required this.property,
     required this.onDrop,
   });
 
   @override
-  State<DropTargetItem> createState() => _DropTargetItemState();
+  State<DragTargetItem> createState() => _DragTargetItemState();
 }
 
-class _DropTargetItemState extends State<DropTargetItem> {
+class _DragTargetItemState extends State<DragTargetItem> {
   String dragItem = '';
   @override
   Widget build(BuildContext context) {
@@ -138,8 +177,8 @@ class _DropTargetItemState extends State<DropTargetItem> {
                     child: Row(
                       children: [
                         Expanded(
-                          child: Text(
-                              dragItem.isNotEmpty ? 'Drop here' : dragItem),
+                          child:
+                              Text(dragItem.isEmpty ? 'Drop here' : dragItem),
                         ),
                         if (dragItem.isNotEmpty)
                           InkWell(
