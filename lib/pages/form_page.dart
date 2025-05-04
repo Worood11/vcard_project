@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:vcard_project/models/contact_model.dart';
+import 'package:vcard_project/pages/home_page.dart';
+import 'package:vcard_project/providers/contact_provider.dart';
 import 'package:vcard_project/utils/constants.dart';
+import 'package:vcard_project/utils/helper_functions.dart';
 
 class FormPage extends StatefulWidget {
   static const String routeName = 'form';
@@ -154,5 +159,15 @@ class _FormPageState extends State<FormPage> {
       widget.contactModel.designation = designationController.text;
       widget.contactModel.website = webController.text;
     }
+    Provider.of<ContactProvider>(context, listen: false)
+        .insertContact(widget.contactModel)
+        .then((value) {
+      if (value > 0) {
+        showMsg(context, 'Saved');
+        context.goNamed(HomePage.routeName);
+      }
+    }).catchError((error) {
+      showMsg(context, 'Failed to save');
+    });
   }
 }
